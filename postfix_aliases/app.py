@@ -40,6 +40,24 @@ def create_mailbox(password, email):
 
 
 @app.cli.command()
+@app.argument('mailbox')
+@app.argument('alias')
+def add_alias(mailbox, alias):
+    mailbox_obj = Mailbox.get(mailbox)
+    mailbox_obj.add_alias(alias)
+    db.session.commit()
+
+
+@app.cli.command()
+@click.password_option()
+@click.argument('email')
+def reset_password(password, email):
+    mailbox = Mailbox.get(email)
+    mailbox.password = hash_ssha512(password)
+    db.session.commit()
+
+
+@app.cli.command()
 @click.argument('alias_yaml', type=click.File('r'))
 def load_data(alias_yaml):
     data = yaml.safe_load(alias_yaml)

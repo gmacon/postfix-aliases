@@ -1,3 +1,5 @@
+from email.headerregistry import Address
+
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 
@@ -25,7 +27,8 @@ class Mailbox(UserMixin, db.Model):
     password = db.Column(db.String(128))
 
     def __str__(self):
-        return '{}@{}'.format(self.localpart, self.domain.name)
+        return str(Address(username=self.localpart,
+                           domain=self.domain.name))
 
     def __repr__(self):
         return '<{}: {}>'.format(self.__class__.__name__, self)
@@ -44,7 +47,8 @@ class Alias(db.Model):
     mailbox = db.relationship('Mailbox', backref='aliases')
 
     def __str__(self):
-        return '{}@{}'.format(self.localpart, self.domain.name)
+        return str(Address(username=self.localpart,
+                           domain=self.domain.name))
 
     def __repr__(self):
         return '<{}: {} for {}>'.format(self.__class__.__name__, self,

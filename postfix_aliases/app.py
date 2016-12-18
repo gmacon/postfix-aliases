@@ -35,18 +35,7 @@ def initdb():
 @click.password_option()
 @click.argument('email')
 def create_mailbox(password, email):
-    localpart, at, domain = email.partition('@')
-
-    domain_obj = Domain.query.filter(Domain.name == domain.lower()).first()
-    if not domain_obj:
-        domain_obj = Domain(name=domain.lower())
-        db.session.add(domain_obj)
-
-    mailbox = Mailbox(localpart=localpart,
-                      domain=domain_obj,
-                      password=hash_ssha512(password))
-    db.session.add(mailbox)
-
+    mailbox = Mailbox.new(email, password)
     db.session.commit()
 
 
@@ -55,29 +44,12 @@ def create_mailbox(password, email):
 def load_data(alias_yaml):
     data = yaml.safe_load(alias_yaml)
 
-    class DomainLookup(dict):
-        def __missing__(self, key):
-            d = self[key] = Domain(name=key)
-            db.session.add(d)
-            return d
-
-    domains = DomainLookup()
-
     for mailbox_addr, mailbox_info in data.items():
-        localpart, at, domainpart = mailbox_addr.partition('@')
-        password = mailbox_info['passwd']
+        password = mailbox_info.get('passwd')
+        mailbox = Mailbox.ensure(mailbox_addr, password)
+
         aliases = mailbox_info.get('aliases', ())
-
-        mailbox = Mailbox(localpart=localpart,
-                          domain=domains[domainpart],
-                          password=password)
-        db.session.add(mailbox)
-
         for alias in aliases:
-            localpart, at, domainpart = alias.partition('@')
-            alias = Alias(localpart=localpart,
-                          domain=domains[domainpart],
-                          mailbox=mailbox)
-            db.session.add(alias)
+            mailbox.add_alias(alias)
 
     db.session.commit()

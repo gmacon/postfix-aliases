@@ -78,3 +78,16 @@ def load_data(alias_yaml):
             mailbox.add_alias(alias)
 
     db.session.commit()
+
+
+@app.cli.command()
+@click.argument('alias_yaml', type=click.File('w'))
+def dump_data(alias_yaml):
+    data = {}
+    for mailbox in Mailbox.query:
+        mailbox_info = {
+            'passwd': mailbox.password,
+            'aliases': [str(a) for a in mailbox.aliases],
+        }
+        data[str(mailbox)] = mailbox_info
+    yaml.safe_dump(data, alias_yaml)

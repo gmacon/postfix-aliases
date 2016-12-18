@@ -4,7 +4,7 @@ from flask_login import LoginManager
 import yaml
 
 from . import aliases, user
-from .models import db, Alias, Domain, Mailbox
+from .models import db, Domain, Mailbox
 from .password import hash_ssha512
 
 
@@ -32,16 +32,23 @@ def initdb():
 
 
 @app.cli.command()
-@click.password_option()
-@click.argument('email')
-def create_mailbox(password, email):
-    mailbox = Mailbox.new(email, password)
+@click.argument('domain')
+def create_domain(domain):
+    Domain.new(domain)
     db.session.commit()
 
 
 @app.cli.command()
-@app.argument('mailbox')
-@app.argument('alias')
+@click.password_option()
+@click.argument('email')
+def create_mailbox(password, email):
+    Mailbox.new(email, password)
+    db.session.commit()
+
+
+@app.cli.command()
+@click.argument('mailbox')
+@click.argument('alias')
 def add_alias(mailbox, alias):
     mailbox_obj = Mailbox.get(mailbox)
     mailbox_obj.add_alias(alias)

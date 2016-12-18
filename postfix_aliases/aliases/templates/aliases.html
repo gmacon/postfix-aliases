@@ -18,10 +18,10 @@
         </ul>
       {% endif %}
     {% endwith %}
-    <h1>Aliases for {{ current_user.localpart }}@{{ current_user.domain.name }}</h1>
+    <h1>Aliases for {{ current_user }}</h1>
     <ul>
       {% for alias in current_user.aliases %}
-        <li>{{ alias.localpart }}@{{ alias.domain.name }}</li>
+        <li>{{ alias }}</li>
       {% endfor %}
       <li>
         <form action="{{ url_for('.new_alias') }}" method="POST">

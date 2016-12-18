@@ -61,6 +61,25 @@ class Mailbox(UserMixin, db.Model):
         db.session.add(self)
         return self
 
+    @classmethod
+    def ensure(cls, addr, password=None):
+        addr = Address(addr_spec=addr)
+
+        mailbox = cls.query.join(Domain).filter(
+            cls.localpart == addr.username.lower(),
+            Domain.name == addr.domain.lower()).first()
+        if mailbox:
+            return mailbox
+
+        domain = Domain.ensure(addr.domain)
+        mailbox = cls(localpart=addr.username.lower(),
+                   domain=domain,
+                   password='')
+        if password is not None:
+            mailbox.password = hash_ssha512(password)
+        db.session.add(mailbox)
+        return mailbox
+
     def add_alias(self, addr):
         addr = Address(addr_spec=addr)
         alias = Alias(localpart=addr.username.lower(),

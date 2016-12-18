@@ -20,10 +20,7 @@ class LoginForm(FlaskForm):
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        localpart, at, domain = form.email.data.partition('@')
-        mailbox = Mailbox.query.join(Domain).filter(
-            Mailbox.localpart == localpart.lower(),
-            Domain.name == domain.lower()).first()
+        mailbox = Mailbox.get(form.email.data)
         if mailbox:
             if check_ssha512(form.password.data, mailbox.password):
                 login_user(mailbox)

@@ -11,7 +11,7 @@ db = SQLAlchemy()
 
 class Domain(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(128), unique=True)
+    name = db.Column(db.String(128), unique=True, nullable=False)
 
     @classmethod
     def get(cls, name):
@@ -37,10 +37,11 @@ class Mailbox(UserMixin, db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    localpart = db.Column(db.String(128))
-    domain_id = db.Column(db.Integer, db.ForeignKey('domain.id'))
+    localpart = db.Column(db.String(128), nullable=False)
+    domain_id = db.Column(db.Integer, db.ForeignKey('domain.id'),
+                          nullable=False)
     domain = db.relationship('Domain', backref='mailboxes')
-    password = db.Column(db.String(128))
+    password = db.Column(db.String(128), nullable=False)
 
     @classmethod
     def get(cls, addr):
@@ -73,8 +74,8 @@ class Mailbox(UserMixin, db.Model):
 
         domain = Domain.ensure(addr.domain)
         mailbox = cls(localpart=addr.username.lower(),
-                   domain=domain,
-                   password='')
+                      domain=domain,
+                      password='')
         if password is not None:
             mailbox.password = hash_ssha512(password)
         db.session.add(mailbox)
@@ -102,10 +103,12 @@ class Alias(db.Model):
     )
 
     id = db.Column(db.Integer, primary_key=True)
-    localpart = db.Column(db.String(128))
-    domain_id = db.Column(db.Integer, db.ForeignKey('domain.id'))
+    localpart = db.Column(db.String(128), nullable=False)
+    domain_id = db.Column(db.Integer, db.ForeignKey('domain.id'),
+                          nullable=False)
     domain = db.relationship('Domain', backref='aliases')
-    mailbox_id = db.Column(db.Integer, db.ForeignKey('mailbox.id'))
+    mailbox_id = db.Column(db.Integer, db.ForeignKey('mailbox.id'),
+                           nullable=False)
     mailbox = db.relationship('Mailbox', backref='aliases')
 
     def __str__(self):

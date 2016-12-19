@@ -51,19 +51,17 @@ class Mailbox(UserMixin, db.Model):
             Domain.name == addr.domain.lower()).first()
 
     @classmethod
-    def new(cls, addr, password=None):
+    def new(cls, addr):
         addr = Address(addr_spec=addr)
         domain = Domain.ensure(addr.domain)
         self = cls(localpart=addr.username.lower(),
                    domain=domain,
                    password='')
-        if password is not None:
-            self.password = hash_ssha512(password)
         db.session.add(self)
         return self
 
     @classmethod
-    def ensure(cls, addr, password=None):
+    def ensure(cls, addr):
         addr = Address(addr_spec=addr)
 
         mailbox = cls.query.join(Domain).filter(
@@ -76,8 +74,6 @@ class Mailbox(UserMixin, db.Model):
         mailbox = cls(localpart=addr.username.lower(),
                       domain=domain,
                       password='')
-        if password is not None:
-            mailbox.password = hash_ssha512(password)
         db.session.add(mailbox)
         return mailbox
 

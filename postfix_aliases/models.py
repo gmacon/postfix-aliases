@@ -84,7 +84,7 @@ class Mailbox(UserMixin, db.Model):
     def add_alias(self, addr):
         addr = Address(addr_spec=addr)
         alias = Alias(localpart=addr.username.lower(),
-                      domain=Domain.get(addr.domain),
+                      domain=Domain.ensure(addr.domain),
                       mailbox=self)
         db.session.add(alias)
         return alias

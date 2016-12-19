@@ -70,8 +70,8 @@ def load_data(alias_yaml):
     data = yaml.safe_load(alias_yaml)
 
     for mailbox_addr, mailbox_info in data.items():
-        password = mailbox_info.get('passwd')
-        mailbox = Mailbox.ensure(mailbox_addr, password)
+        mailbox = Mailbox.ensure(mailbox_addr)
+        mailbox.password = mailbox_info.get('passwd')
 
         aliases = mailbox_info.get('aliases', ())
         for alias in aliases:

@@ -3,6 +3,7 @@ from flask_login import current_user, login_required, login_user, logout_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired, Email, EqualTo
+from wtforms.widgets.html5 import EmailInput
 
 from ..models import db, Mailbox
 from ..password import hash_ssha512, check_ssha512
@@ -12,7 +13,8 @@ bp = Blueprint('user', __name__, template_folder='templates')
 
 
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Email()])
+    email = StringField('Email', validators=[DataRequired(), Email()],
+                        widget=EmailInput)
     password = PasswordField('Password', validators=[DataRequired()])
 
 

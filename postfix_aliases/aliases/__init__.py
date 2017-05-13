@@ -36,6 +36,7 @@ def aliases():
 
             db.session.add(alias)
             db.session.commit()
+            flash('Added alias {}'.format(alias), 'info')
         else:
             for field, errors in form.errors.items():
                 for error in errors:

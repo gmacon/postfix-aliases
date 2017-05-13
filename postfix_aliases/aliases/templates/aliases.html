@@ -22,7 +22,14 @@
     <h1>Aliases for {{ current_user }}</h1>
     <ul>
       {% for alias in current_user.aliases %}
-        <li>{{ alias }}</li>
+        <li>
+          <form action="{{ url_for('.delete_alias', alias_id=alias.id, _method='POST') }}"
+                method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {{ alias }}
+            <input type="submit" value="Delete">
+          </form>
+        </li>
       {% endfor %}
       <li>
         <form action="{{ url_for('.aliases') }}" method="POST">

@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request
+from flask import Blueprint, flash, redirect, render_template, request, url_for
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField
@@ -42,3 +42,14 @@ def aliases():
                     flash('{}: {}'.format(field, error), 'error')
 
     return render_template('aliases.html', new_alias_form=form)
+
+
+@bp.route('/<int:alias_id>/delete', methods=['POST'])
+@login_required
+def delete_alias(alias_id):
+    alias = Alias.query.get_or_404(alias_id)
+    str_alias = str(alias)
+    db.session.delete(alias)
+    db.session.commit()
+    flash('Deleted alias {}'.format(str_alias), 'info')
+    return redirect(url_for('.aliases'))

@@ -3,6 +3,11 @@
 {% block main %}
   <div class="row">
     <h1>Aliases for {{ current_user }}</h1>
+    <form class="inline" action="{{ url_for('.aliases') }}" method="POST">
+      {{ new_alias_form.hidden_tag() }}
+      {{ new_alias_form.localpart() }}@{{ new_alias_form.domain() }}
+      <input type="submit" value="Add">
+    </form>
     <ul>
       {% for alias in current_user.aliases %}
         <li>
@@ -16,10 +21,5 @@
         </li>
       {% endfor %}
     </ul>
-    <form class="inline" action="{{ url_for('.aliases') }}" method="POST">
-      {{ new_alias_form.hidden_tag() }}
-      {{ new_alias_form.localpart() }}@{{ new_alias_form.domain() }}
-      <input type="submit" value="Add">
-    </form>
   </div>
 {% endblock %}

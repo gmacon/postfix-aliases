@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, flash, render_template, request
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import SelectField, StringField
@@ -22,30 +22,23 @@ def create_new_alias_form():
     return form
 
 
-@bp.route('/')
+@bp.route('/', methods=['GET', 'POST'])
 @login_required
 def aliases():
-    new_alias_form = create_new_alias_form()
-    return render_template('aliases.html',
-                           new_alias_form=new_alias_form)
-
-
-@bp.route('/new', methods=['POST'])
-@login_required
-def new_alias():
     form = create_new_alias_form()
-    if form.validate_on_submit():
-        domain = Domain.query.get(int(form.domain.data))
+    if request.method == 'POST':
+        if form.validate():
+            domain = Domain.query.get(int(form.domain.data))
 
-        alias = Alias(localpart=form.localpart.data,
-                      domain=domain,
-                      mailbox=current_user)
+            alias = Alias(localpart=form.localpart.data,
+                          domain=domain,
+                          mailbox=current_user)
 
-        db.session.add(alias)
-        db.session.commit()
-    else:
-        for field, errors in form.errors.items():
-            for error in errors:
-                flash('{}: {}'.format(field, error), 'error')
+            db.session.add(alias)
+            db.session.commit()
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    flash('{}: {}'.format(field, error), 'error')
 
-    return redirect(url_for('.aliases'))
+    return render_template('aliases.html', new_alias_form=form)

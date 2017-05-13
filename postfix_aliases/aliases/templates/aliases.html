@@ -24,7 +24,7 @@
         <li>{{ alias }}</li>
       {% endfor %}
       <li>
-        <form action="{{ url_for('.new_alias') }}" method="POST">
+        <form action="{{ url_for('.aliases') }}" method="POST">
           {{ new_alias_form.hidden_tag() }}
           {{ new_alias_form.localpart() }}@{{ new_alias_form.domain() }}
           <input type="submit" value="Add">

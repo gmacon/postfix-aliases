@@ -3,8 +3,6 @@ from email.headerregistry import Address
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 
-from .password import hash_ssha512
-
 
 db = SQLAlchemy()
 

@@ -105,7 +105,9 @@ class Alias(db.Model):
     domain = db.relationship('Domain', backref='aliases')
     mailbox_id = db.Column(db.Integer, db.ForeignKey('mailbox.id'),
                            nullable=False)
-    mailbox = db.relationship('Mailbox', backref='aliases')
+    mailbox = db.relationship('Mailbox',
+                              backref=db.backref('aliases',
+                                                 order_by='Alias.localpart'))
 
     def __str__(self):
         return str(Address(username=self.localpart,

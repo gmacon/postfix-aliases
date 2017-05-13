@@ -1,12 +1,14 @@
 {% extends '_base.html' %}
 {% block title %}Change Password{% endblock %}
 {% block main %}
-<h1>Change Password</h1>
-<form action="{{ url_for('.change_password') }}" method="POST">
-  {{ form.hidden_tag() }}
-  {% for field in form if not field.flags.hidden %}
-  <p>{{ field.label() }} {{ field() }}</p>
-  {% endfor %}
-  <input type="submit" value="Change Password">
-</form>
+  <div class="row">
+    <h1>Change Password</h1>
+    <form action="{{ url_for('.change_password') }}" method="POST">
+      {{ form.hidden_tag() }}
+      {% for field in form if not field.flags.hidden %}
+        <p>{{ field.label() }} {{ field() }}</p>
+      {% endfor %}
+      <input type="submit" value="Change Password">
+    </form>
+  </div>
 {% endblock %}

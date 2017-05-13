@@ -1,24 +1,25 @@
 {% extends '_base.html' %}
 {% block title %}Aliases{% endblock %}
 {% block main %}
-<h1>Aliases for {{ current_user }}</h1>
-<ul>
-  {% for alias in current_user.aliases %}
-  <li>
-    <form action="{{ url_for('.delete_alias', alias_id=alias.id, _method='POST') }}"
-          method="POST">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      {{ alias }}
-      <input type="submit" value="Delete">
-    </form>
-  </li>
-  {% endfor %}
-  <li>
-    <form action="{{ url_for('.aliases') }}" method="POST">
+  <div class="row">
+    <h1>Aliases for {{ current_user }}</h1>
+    <ul>
+      {% for alias in current_user.aliases %}
+        <li>
+          <form class="inline"
+                action="{{ url_for('.delete_alias', alias_id=alias.id, _method='POST') }}"
+                method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            {{ alias }}
+            <input type="submit" value="Delete">
+          </form>
+        </li>
+      {% endfor %}
+    </ul>
+    <form class="inline" action="{{ url_for('.aliases') }}" method="POST">
       {{ new_alias_form.hidden_tag() }}
       {{ new_alias_form.localpart() }}@{{ new_alias_form.domain() }}
       <input type="submit" value="Add">
     </form>
-  </li>
-</ul>
+  </div>
 {% endblock %}

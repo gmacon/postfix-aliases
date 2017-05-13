@@ -5,11 +5,13 @@
     <title>{% block title %}{% endblock %}</title>
   </head>
   <body>
-    <form action="{{ url_for('user.logout') }}" method="POST">
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-      <input type="submit" value="Log Out">
-    </form>
-    <p><a href="{{ url_for('user.change_password') }}">Change Password</a></p>
+    {% if current_user.is_authenticated %}
+      <form action="{{ url_for('user.logout') }}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="submit" value="Log Out">
+      </form>
+      <p><a href="{{ url_for('user.change_password') }}">Change Password</a></p>
+    {% endif %}
     {% with messages = get_flashed_messages(with_categories=True) %}
       {% if messages %}
         <ul>

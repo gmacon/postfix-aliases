@@ -14,7 +14,7 @@ bp = Blueprint('user', __name__, template_folder='templates')
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()],
-                        widget=EmailInput)
+                        widget=EmailInput())
     password = PasswordField('Password', validators=[DataRequired()])
 
 

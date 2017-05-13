@@ -6,6 +6,7 @@
   </head>
   <body>
     <form action="{{ url_for('user.logout') }}" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <input type="submit" value="Log Out">
     </form>
     <p><a href="{{ url_for('user.change_password') }}">Change Password</a></p>

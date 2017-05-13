@@ -1,6 +1,7 @@
 import click
 from flask import Flask
 from flask_login import LoginManager
+from flask_wtf.csrf import CsrfProtect
 import yaml
 
 from . import aliases, user
@@ -15,6 +16,8 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'user.login'
 
 db.init_app(app)
+
+csrf = CsrfProtect(app)
 
 
 @login_manager.user_loader

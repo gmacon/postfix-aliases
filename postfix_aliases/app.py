@@ -45,7 +45,9 @@ def create_domain(domain):
 @click.password_option()
 @click.argument('email')
 def create_mailbox(password, email):
-    Mailbox.new(email, password)
+    user = Mailbox.new(email)
+    if password:
+        user.password = hash_ssha512(password)
     db.session.commit()
 
 
